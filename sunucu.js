@@ -51,10 +51,17 @@ app.post('/talep-gonder', async (req, res) => {
     }
 });
 
-// YÖNETİCİ PANELİ (Sadece senin görebileceğin özel alan)
+// GÜVENLİ YÖNETİCİ PANELİ
 app.get('/admin-panel-akca', async (req, res) => {
+    // BURAYA SENİN ÖZEL ŞİFREN (Örn: 'Akca2026!')
+    const yoneticiSifresi = req.query.sifre;
+
+    if (yoneticiSifresi !== 'Zaza2121') {
+        return res.status(401).send("<h2>Yetkisiz Erişim!</h2><p>Bu alan sadece Av. Furkan Akça'ya özeldir.</p>");
+    }
+
     try {
-        const tumTalepler = await Talep.find().sort({ tarih: -1 }); // En yeni mesajı en üstte getir
+        const tumTalepler = await Talep.find().sort({ tarih: -1 });
         let tabloSatirlari = tumTalepler.map(t => `
             <tr>
                 <td style="border: 1px solid #ddd; padding: 10px;">${t.tarih.toLocaleString('tr-TR')}</td>
@@ -66,7 +73,7 @@ app.get('/admin-panel-akca', async (req, res) => {
 
         res.send(`
             <body style="font-family: sans-serif; padding: 40px; background: #f8f9fa;">
-                <h2 style="color: #1a2a6c; text-align: center;">Akça Hukuk - Gelen Danışmanlık Talepleri</h2>
+                <h2 style="color: #1a2a6c; text-align: center;">Akça Hukuk - Güvenli Yönetici Paneli</h2>
                 <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                     <thead style="background: #1a2a6c; color: white;">
                         <tr>
@@ -84,7 +91,6 @@ app.get('/admin-panel-akca', async (req, res) => {
     } catch (err) {
         res.send("Panel yüklenirken hata oluştu.");
     }
-});
-// Eski satırı sil, bunu yapıştır:
+});// Eski satırı sil, bunu yapıştır:
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Akça Hukuk Portalı ${PORT} portunda aktif.`));
