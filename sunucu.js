@@ -85,4 +85,6 @@ app.get('/admin-panel-akca', async (req, res) => {
         res.send("Panel yüklenirken hata oluştu.");
     }
 });
-app.listen(3000, () => console.log('Akça Hukuk Portalı 3000 portunda aktif.'));
+// Eski satırı sil, bunu yapıştır:
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Akça Hukuk Portalı ${PORT} portunda aktif.`));
